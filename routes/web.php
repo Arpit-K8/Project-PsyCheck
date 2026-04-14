@@ -5,3 +5,155 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+/*
+mental-health-app/
+│
+├── app/
+│   ├── Console/
+│   │
+│   ├── Exceptions/
+│   │
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Auth/
+│   │   │   │   ├── LoginController.php
+│   │   │   │   ├── RegisterController.php
+│   │   │   │
+│   │   │   ├── AssessmentController.php
+│   │   │   ├── QuestionController.php
+│   │   │   ├── ResultController.php
+│   │   │   ├── RecommendationController.php
+│   │   │   ├── DashboardController.php
+│   │   │   ├── EmergencyController.php
+│   │   │
+│   │   ├── Middleware/
+│   │   │
+│   │   ├── Requests/    (Validation Layer)
+│   │   │   ├── StoreAssessmentRequest.php
+│   │   │   ├── SubmitAnswerRequest.php
+│   │   │
+│   │   └── Kernel.php
+│
+│   ├── Models/
+│   │   ├── User.php
+│   │   ├── Question.php
+│   │   ├── Answer.php
+│   │   ├── Assessment.php
+│   │   ├── AssessmentResponse.php
+│   │   ├── Result.php
+│   │   ├── Recommendation.php
+│   │
+│   ├── Services/   (CORE LOGIC)
+│   │   ├── AssessmentService.php
+│   │   ├── ScoringService.php
+│   │   ├── RecommendationService.php
+│   │   ├── ReportService.php
+│   │
+│   ├── Repositories/    (Advanced / optional but top-level)
+│   │   ├── QuestionRepository.php
+│   │   ├── AssessmentRepository.php
+│   │   ├── ResultRepository.php
+│   │
+│   ├── Helpers/    (Optional utilities)
+│   │   └── ScoreHelper.php
+│
+│   ├── Mail/    (Email feature)
+│   │   └── ResultMail.php
+│
+│   └── Providers/
+│
+│
+├── bootstrap/
+│
+├── config/
+│
+├── database/
+│   ├── factories/
+│   │
+│   ├── migrations/   (DATABASE DESIGN)
+│   │   ├── create_users_table.php
+│   │   ├── create_questions_table.php
+│   │   ├── create_answers_table.php
+│   │   ├── create_assessments_table.php
+│   │   ├── create_assessment_responses_table.php
+│   │   ├── create_results_table.php
+│   │   ├── create_recommendations_table.php
+│   │
+│   ├── seeders/   (DUMMY DATA)
+│   │   ├── DatabaseSeeder.php
+│   │   ├── QuestionSeeder.php
+│   │   ├── AnswerSeeder.php
+│   │
+│
+├── public/
+│   ├── css/
+│   ├── js/
+│   ├── images/
+│   │   ├── icons/
+│   │   ├── mental-health/
+│   │
+│   └── index.php
+│
+│
+├── resources/
+│   ├── views/
+│   │   ├── layouts/
+│   │   │   ├── app.blade.php
+│   │   │   ├── guest.blade.php
+│   │   │
+│   │   ├── auth/
+│   │   │   ├── login.blade.php
+│   │   │   ├── register.blade.php
+│   │   │
+│   │   ├── assessment/
+│   │   │   ├── start.blade.php
+│   │   │   ├── question.blade.php
+│   │   │   ├── progress.blade.php
+│   │   │   ├── complete.blade.php
+│   │   │
+│   │   ├── results/
+│   │   │   ├── show.blade.php
+│   │   │   ├── report.blade.php
+│   │   │
+│   │   ├── dashboard/
+│   │   │   ├── index.blade.php
+│   │   │   ├── analytics.blade.php
+│   │   │
+│   │   ├── recommendations/
+│   │   │   ├── tips.blade.php
+│   │   │   ├── resources.blade.php
+│   │   │
+│   │   ├── emergency/
+│   │   │   ├── help.blade.php
+│   │   │
+│   │   └── components/
+│   │       ├── navbar.blade.php
+│   │       ├── footer.blade.php
+│   │       ├── progress-bar.blade.php
+│   │
+│   ├── css/
+│   ├── js/
+│
+│
+├── routes/
+│   ├── web.php   (MAIN ROUTES)
+│   ├── api.php   (OPTIONAL API)
+│
+│
+├── storage/
+│   ├── app/
+│   │   ├── reports/   (Generated PDFs)
+│   │
+│   ├── logs/
+│
+│
+├── tests/
+│
+├── .env
+├── artisan
+├── composer.json
+└── package.json
+
+*/
