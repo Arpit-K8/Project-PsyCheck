@@ -32,6 +32,15 @@
                 <div class="rounded-full bg-fuchsia-50 px-4 py-2 text-fuchsia-700 ring-1 ring-fuchsia-100">Today: {{ now()->format('M d, Y') }}</div>
                 <div class="rounded-full bg-rose-50 px-4 py-2 text-rose-700 ring-1 ring-rose-100">1 new recommendation</div>
                 <div class="rounded-full bg-slate-50 px-4 py-2 text-slate-600 ring-1 ring-slate-200">Next check-in in 3 days</div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-white shadow-[0_10px_24px_rgba(15,23,42,.18)] transition hover:bg-slate-800" aria-label="Logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
+                            <path fill-rule="evenodd" d="M10 3.75A2.75 2.75 0 0 0 7.25 6.5v2a.75.75 0 0 1-1.5 0v-2A4.25 4.25 0 0 1 10 2.25h5A4.25 4.25 0 0 1 19.25 6.5v11A4.25 4.25 0 0 1 15 21.75h-5A4.25 4.25 0 0 1 5.75 17.5v-2a.75.75 0 0 1 1.5 0v2A2.75 2.75 0 0 0 10 20.25h5a2.75 2.75 0 0 0 2.75-2.75v-11A2.75 2.75 0 0 0 15 3.75h-5Zm1.78 5.72a.75.75 0 0 0-1.06 1.06l1.72 1.72H3a.75.75 0 0 0 0 1.5h9.44l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3Z" clip-rule="evenodd" />
+                        </svg>
+                        <p class="ml-2">Exit</p>
+                    </button>
+                </form>
             </div>
         </header>
 
@@ -195,7 +204,7 @@
                             <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Profile</p>
                             <h3 class="mt-2 text-2xl font-extrabold text-slate-900">Your account</h3>
                         </div>
-                        <div class="rounded-full bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">logged in</div>
+                        <div class="rounded-full bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">{{ __("You're logged in!") }}</div>
                     </div>
     
                     <div class="mt-6 rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-6 ring-1 ring-fuchsia-100">
