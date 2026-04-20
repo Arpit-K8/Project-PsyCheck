@@ -301,8 +301,152 @@
                         </div>
                     </div>
                 </article>
+                <section class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
+                    <div class="flex items-center justify-between">
+                        <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Wellness Highlights</p>
+                        <span class="rounded-full bg-fuchsia-50 px-3 py-1 text-xs font-semibold text-fuchsia-700">3 slides</span>
+                    </div>
+
+                    <div id="wellness-slider" class="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                        <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Slide 1</p>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Quote of the Day</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">"The greatest wealth is health."</p>
+                        </article>
+
+                        <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Slide 2</p>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Achievement</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">We are hitting <span class="font-extrabold text-fuchsia-700">XYZ followers</span>. Thank you for growing with PsyCheck.</p>
+                        </article>
+
+                        <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Slide 3</p>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Health Reminder</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">If you are having a problem, go for a checkup with a nearby doctor.</p>
+                        </article>
+                    </div>
+
+                    <div class="mt-4 flex items-center justify-center gap-2">
+                        <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-500 transition" data-index="0" aria-label="Go to slide 1"></button>
+                        <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-200 transition" data-index="1" aria-label="Go to slide 2"></button>
+                        <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-200 transition" data-index="2" aria-label="Go to slide 3"></button>
+                    </div>
+                </section>
             </aside>
         </main>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const slider = document.getElementById('wellness-slider');
+            if (!slider) {
+                return;
+            }
+
+            const slides = Array.from(slider.querySelectorAll('.js-wellness-slide'));
+            const section = slider.closest('section');
+            const dots = section ? Array.from(section.querySelectorAll('.js-wellness-dot')) : [];
+            if (!slides.length || !dots.length) {
+                return;
+            }
+
+            let activeIndex = 0;
+            let autoSlideTimer = null;
+            let scrollTicking = false;
+
+            const normalizeIndex = function (index) {
+                return (index + slides.length) % slides.length;
+            };
+
+            const setActiveDot = function (index) {
+                dots.forEach(function (dot, dotIndex) {
+                    const isActive = dotIndex === index;
+                    dot.classList.toggle('bg-fuchsia-500', isActive);
+                    dot.classList.toggle('bg-fuchsia-200', !isActive);
+                    dot.setAttribute('aria-current', isActive ? 'true' : 'false');
+                });
+            };
+
+            const getCenteredSlideIndex = function () {
+                const sliderRect = slider.getBoundingClientRect();
+                const sliderCenter = sliderRect.left + sliderRect.width / 2;
+                let nearestIndex = 0;
+                let nearestDistance = Number.POSITIVE_INFINITY;
+
+                slides.forEach(function (slide, index) {
+                    const slideRect = slide.getBoundingClientRect();
+                    const slideCenter = slideRect.left + slideRect.width / 2;
+                    const distance = Math.abs(sliderCenter - slideCenter);
+
+                    if (distance < nearestDistance) {
+                        nearestDistance = distance;
+                        nearestIndex = index;
+                    }
+                });
+
+                return nearestIndex;
+            };
+
+            const getSlideLeftInSlider = function (index) {
+                const targetSlide = slides[index];
+                return targetSlide.offsetLeft - slider.offsetLeft;
+            };
+
+            const syncActiveFromView = function () {
+                const nearestIndex = getCenteredSlideIndex();
+                if (nearestIndex !== activeIndex) {
+                    activeIndex = nearestIndex;
+                    setActiveDot(activeIndex);
+                }
+            };
+
+            const goToSlide = function (index, smooth) {
+                const targetIndex = normalizeIndex(index);
+                activeIndex = targetIndex;
+                slider.scrollTo({
+                    left: getSlideLeftInSlider(targetIndex),
+                    behavior: smooth === false ? 'auto' : 'smooth'
+                });
+                setActiveDot(activeIndex);
+            };
+
+            const startAutoSlide = function () {
+                clearInterval(autoSlideTimer);
+                autoSlideTimer = setInterval(function () {
+                    goToSlide(activeIndex + 1);
+                }, 5000);
+            };
+
+            dots.forEach(function (dot) {
+                dot.addEventListener('click', function () {
+                    const index = Number(dot.dataset.index || 0);
+                    goToSlide(index);
+                    startAutoSlide();
+                });
+            });
+
+            slider.addEventListener('scroll', function () {
+                if (scrollTicking) {
+                    return;
+                }
+
+                scrollTicking = true;
+                window.requestAnimationFrame(function () {
+                    syncActiveFromView();
+                    scrollTicking = false;
+                });
+            });
+
+            window.addEventListener('resize', function () {
+                goToSlide(activeIndex, false);
+                syncActiveFromView();
+            });
+
+            goToSlide(0, false);
+            syncActiveFromView();
+            startAutoSlide();
+        });
+    </script>
 </body>
 </html>
