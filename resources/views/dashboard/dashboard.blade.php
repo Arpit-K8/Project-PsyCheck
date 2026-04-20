@@ -317,7 +317,7 @@
                         <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Slide 2</p>
                             <h3 class="mt-2 text-xl font-extrabold text-slate-900">Achievement</h3>
-                            <p class="mt-3 text-sm leading-7 text-slate-600">We are hitting <span class="font-extrabold text-fuchsia-700">XYZ followers</span>. Thank you for growing with PsyCheck.</p>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">We are hitting <span class="font-extrabold text-fuchsia-700">400 followers</span>. Thank you for growing with PsyCheck.</p>
                         </article>
 
                         <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
