@@ -9,41 +9,14 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800" rel="stylesheet" />
     <script src="https://cdn.tailwindcss.com"></script>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
         body { font-family: 'Instrument Sans', sans-serif; }
     </style>
 </head>
 <body class="min-h-screen bg-[#f8ebf1] bg-[radial-gradient(circle_at_50%_-20%,#b23673_0,#e39fb8_34%,#f8ebf1_82%)] text-slate-800 antialiased selection:bg-fuchsia-200 selection:text-fuchsia-900">
     <div class="mx-auto min-h-screen max-w-7xl px-4 pb-10 pt-6 sm:px-8 lg:px-10">
-        <header class="mb-6 flex flex-col gap-4 rounded-[32px] bg-white/80 px-6 py-3 shadow-[0_20px_60px_rgba(89,29,63,.12)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-            <div class="flex items-center group">
-                <!-- Logo -->
-                <img src="{{ asset('images/Logo.png') }}" 
-                    alt="PsyCheck logo" 
-                    class="h-20 w-20 shrink-0 object-cover transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-lg lg:h-24 lg:w-24" />
-
-                <!-- Text block -->
-                <div class="flex flex-col">
-                    <p class="text-xl font-bold text-fuchsia-700">PsyCheck</p>
-                    <p class="text-xs uppercase tracking-[0.22em] text-slate-400">Mental Wellness Platform</p>
-                </div>
-            </div>
-            <div class="flex flex-wrap items-center gap-3 text-sm font-semibold">
-                <div class="rounded-full bg-fuchsia-50 px-4 py-2 text-fuchsia-700 ring-1 ring-fuchsia-100">Today: {{ now()->format('M d, Y') }}</div>
-                <div class="rounded-full bg-rose-50 px-4 py-2 text-rose-700 ring-1 ring-rose-100">1 new recommendation</div>
-                <div class="rounded-full bg-slate-50 px-4 py-2 text-slate-600 ring-1 ring-slate-200">Next check-in in 3 days</div>
-                <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button type="submit" class="inline-flex items-center justify-center rounded-full bg-slate-900 px-4 py-2 text-white shadow-[0_10px_24px_rgba(15,23,42,.18)] transition hover:bg-slate-800" aria-label="Logout">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
-                            <path fill-rule="evenodd" d="M10 3.75A2.75 2.75 0 0 0 7.25 6.5v2a.75.75 0 0 1-1.5 0v-2A4.25 4.25 0 0 1 10 2.25h5A4.25 4.25 0 0 1 19.25 6.5v11A4.25 4.25 0 0 1 15 21.75h-5A4.25 4.25 0 0 1 5.75 17.5v-2a.75.75 0 0 1 1.5 0v2A2.75 2.75 0 0 0 10 20.25h5a2.75 2.75 0 0 0 2.75-2.75v-11A2.75 2.75 0 0 0 15 3.75h-5Zm1.78 5.72a.75.75 0 0 0-1.06 1.06l1.72 1.72H3a.75.75 0 0 0 0 1.5h9.44l-1.72 1.72a.75.75 0 1 0 1.06 1.06l3-3a.75.75 0 0 0 0-1.06l-3-3Z" clip-rule="evenodd" />
-                        </svg>
-                        <p class="ml-2">Exit</p>
-                    </button>
-                </form>
-            </div>
-        </header>
-
+        @include('layouts.dashboard-navigation')
         <main class="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)]">
             <section class="space-y-6">
                 <article class="overflow-hidden rounded-[36px] bg-white shadow-[0_24px_70px_rgba(89,29,63,.14)]">
@@ -104,6 +77,39 @@
                     </div>
                 </article>
 
+                <section id="assessment-menus" class="rounded-[32px] bg-white p-8 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Assessment Menus</p>
+                            <h2 class="mt-2 text-2xl font-extrabold text-slate-900">Choose your assessment</h2>
+                        </div>
+                        <span class="rounded-full bg-fuchsia-50 px-3 py-2 text-xs font-semibold text-fuchsia-700">3 tracks</span>
+                    </div>
+
+                    <div class="mt-6 grid gap-4 md:grid-cols-3">
+                        <a href="{{ route('assessment.start', ['track' => 'body']) }}" class="group rounded-[24px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100 transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(190,24,93,.16)]">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Body</p>
+                            <h3 class="mt-2 text-xl font-black text-slate-900">Body Assessment</h3>
+                            <p class="mt-2 text-sm text-slate-600">Check physical wellbeing, sleep rhythm, and daily energy level.</p>
+                            <p class="mt-4 text-sm font-semibold text-fuchsia-700 group-hover:text-fuchsia-800">Start now -></p>
+                        </a>
+
+                        <a href="{{ route('assessment.start', ['track' => 'mind']) }}" class="group rounded-[24px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100 transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(190,24,93,.16)]">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Mind</p>
+                            <h3 class="mt-2 text-xl font-black text-slate-900">Mind Assessment</h3>
+                            <p class="mt-2 text-sm text-slate-600">Measure mood, stress patterns, and emotional balance today.</p>
+                            <p class="mt-4 text-sm font-semibold text-fuchsia-700 group-hover:text-fuchsia-800">Start now -></p>
+                        </a>
+
+                        <a href="{{ route('assessment.start', ['track' => 'analysis']) }}" class="group rounded-[24px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100 transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(190,24,93,.16)]">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Analysis</p>
+                            <h3 class="mt-2 text-xl font-black text-slate-900">Analysis Assessment</h3>
+                            <p class="mt-2 text-sm text-slate-600">Review combined score trends and next-action recommendations.</p>
+                            <p class="mt-4 text-sm font-semibold text-fuchsia-700 group-hover:text-fuchsia-800">Start now -></p>
+                        </a>
+                    </div>
+                </section>
+
                 <section id="summary" class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                     <article class="rounded-[28px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70 transition hover:-translate-y-1">
                         <p class="text-sm font-semibold text-slate-500">Mood balance</p>
@@ -150,7 +156,7 @@
                     </article>
                 </section>
                 <section>
-                    <article id="recommendation" class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
+                    <article id="recommendation" class="rounded-[32px] bg-white p-7 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
                         <p class="text-2xl font-extrabold text-slate-900">Recommended next step</p>
                         <p class="mt-2 text-sm text-slate-500">Based on your latest assessment, this is the most relevant action for you.</p>
 
@@ -170,7 +176,7 @@
                 </section>
 
                 <section>
-                    <article class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
+                    <article class="rounded-[32px] bg-white p-8 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
                         <div class="flex items-center justify-between">
                             <div>
                                 <p class="text-2xl font-extrabold text-slate-900">Your weekly trend</p>
@@ -206,7 +212,7 @@
                         </div>
                         <div class="rounded-full bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">{{ __("You're logged in!") }}</div>
                     </div>
-    
+                    
                     <div class="mt-6 rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-6 ring-1 ring-fuchsia-100">
                         <div class="flex items-center gap-4">
                             <div class="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-fuchsia-600 to-rose-500 text-2xl font-black text-white shadow-[0_12px_30px_rgba(194,37,112,.28)]">
@@ -217,7 +223,7 @@
                                 <p class="text-sm text-slate-500">{{ auth()->user()->email ?? 'user@example.com' }}</p>
                             </div>
                         </div>
-    
+                        
                         <div class="mt-6 grid gap-3 sm:grid-cols-2">
                             <div class="rounded-2xl bg-white px-4 py-3 shadow-sm ring-1 ring-fuchsia-100">
                                 <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Account state</p>
@@ -228,7 +234,7 @@
                                 <p class="mt-2 text-sm font-bold text-slate-900">Today</p>
                             </div>
                         </div>
-    
+                        
                         <div class="mt-5 space-y-3">
                             <a href="{{ route('profile.edit') }}" class="flex items-center justify-between rounded-2xl bg-fuchsia-700 px-4 py-3 text-sm font-semibold text-white shadow-[0_12px_26px_rgba(114,29,100,.22)] transition hover:bg-fuchsia-800">
                                 <span>Edit profile details</span>
@@ -241,6 +247,29 @@
                         </div>
                     </div>
                 </article>
+
+                <article class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Notifications</p>
+                            <h3 class="mt-2 text-2xl font-extrabold text-slate-900">Recent alerts</h3>
+                        </div>
+                        <span class="rounded-full bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">2 new</span>
+                    </div>
+
+                    <div class="mt-6 space-y-3">
+                        <div class="rounded-2xl bg-fuchsia-50 px-4 py-4 ring-1 ring-fuchsia-100">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-fuchsia-600">Score update</p>
+                            <p class="mt-2 text-sm font-semibold text-slate-700">Your latest mind score is <span class="font-black text-fuchsia-700">75%</span>, up from last check-in.</p>
+                        </div>
+
+                        <div class="rounded-2xl bg-rose-50 px-4 py-4 ring-1 ring-rose-100">
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-600">Check-in late</p>
+                            <p class="mt-2 text-sm font-semibold text-slate-700">Your check-in is overdue by 1 day. Complete today to keep trend data accurate.</p>
+                        </div>
+                    </div>
+                </article>
+
                 <article class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
                     <div class="flex items-center justify-between">
                         <div>

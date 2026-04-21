@@ -11,6 +11,10 @@ Route::get('/dashboard', function () {
     return view('dashboard.dashboard');// folderName.fileName
 })->middleware(['auth', 'verified'])->name('dashboard');
 
+Route::get('/assessment/start', function () {
+    return view('assessment.start');
+})->middleware(['auth', 'verified'])->name('assessment.start');
+
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
