@@ -98,11 +98,18 @@ mental-health-app/
 │   │   │   ├── register.blade.php
 │   │   │
 │   │   ├── assessment/
-│   │   │   ├── start.blade.php
-│   │   │   ├── question.blade.php
-│   │   │   ├── progress.blade.php
-│   │   │   ├── complete.blade.php
-│   │   │
+│   │   │   ├── mindtest
+            |   ├── start.blade.php
+│   │   │   |   ├── question.blade.php
+│   │   │   |   ├── progress.blade.php
+│   │   │   |   ├── complete.blade.php
+│   │   │   |    
+│   │   │   ├── bodytest
+                   ├── start.blade.php
+│   │   │          ├── question.blade.php
+│   │   │          ├── progress.blade.php
+│   │   │          ├── complete.blade.php                    
+├   ├   ├
 │   │   ├── results/
 │   │   │   ├── show.blade.php
 │   │   │   ├── report.blade.php
