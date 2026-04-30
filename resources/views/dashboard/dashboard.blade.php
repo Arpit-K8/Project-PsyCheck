@@ -362,6 +362,31 @@
                         <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-200 transition" data-index="2" aria-label="Go to slide 3"></button>
                     </div>
                 </section>
+                <section class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Emergency Info</p>
+                            <h3 class="mt-2 text-2xl font-extrabold text-slate-900">Need immediate help?</h3>
+                        </div>
+                        <div class="rounded-full bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 ring-1 ring-rose-100">24 / 7</div>
+                    </div>
+
+                    <div class="mt-5 rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
+                        <div class="flex items-start gap-4">
+                            <div class="min-w-0">
+                                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Emergency Call</p>
+                                <a href="tel:108" class="mt-2 inline-flex items-center gap-3 text-4xl font-black tracking-tight text-slate-900 transition hover:text-fuchsia-700">
+                                    108
+                                    <span class="rounded-full bg-white px-3 py-1 text-sm font-semibold text-fuchsia-700 shadow-sm ring-1 ring-fuchsia-100">Tap to call</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <p class="mt-4 text-sm leading-7 text-slate-600">
+                            If you or someone else is in immediate danger, call emergency services right away or go to the nearest emergency room.
+                        </p>
+                    </div>
+                </section>
             </aside>
         </main>
     </div>
