@@ -15,11 +15,12 @@
             <div class="rounded-full bg-fuchsia-50 px-4 py-2 text-fuchsia-700 ring-1 ring-fuchsia-100">Today: {{ now()->format('M d, Y') }}</div>
             <div class="rounded-full bg-slate-50 px-4 py-2 text-slate-600 ring-1 ring-slate-200">Next check-in in 3 days</div>
 
-            <button type="button" class="inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-rose-700 ring-1 ring-rose-100" aria-label="View notifications">
+            <button type="button" class="relative inline-flex items-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-rose-700 ring-1 ring-rose-100" aria-label="View notifications">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
                     <path d="M12 2.25a5.25 5.25 0 0 0-5.25 5.25v2.325c0 .484-.166.953-.47 1.33l-1.293 1.596a1.875 1.875 0 0 0 1.456 3.054h11.123a1.875 1.875 0 0 0 1.456-3.054l-1.293-1.595a2.122 2.122 0 0 1-.47-1.33V7.5A5.25 5.25 0 0 0 12 2.25Z" />
                     <path d="M9.75 18a2.25 2.25 0 1 0 4.5 0h-4.5Z" />
                 </svg>
+                <span class="js-nav-notification-badge absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">2</span>
             </button>
 
             <form method="POST" action="{{ route('logout') }}">
@@ -57,11 +58,12 @@
     <div x-cloak x-show="open" x-transition class="mt-3 space-y-3 border-t border-fuchsia-100 pt-3 sm:hidden">
         <div class="rounded-full bg-fuchsia-50 px-4 py-2 text-sm font-semibold text-fuchsia-700 ring-1 ring-fuchsia-100">Today: {{ now()->format('M d, Y') }}</div>
 
-        <button type="button" class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 ring-1 ring-rose-100" aria-label="View notifications">
+        <button type="button" class="relative inline-flex w-full items-center justify-center gap-2 rounded-full bg-rose-50 px-4 py-2 text-sm font-semibold text-rose-700 ring-1 ring-rose-100" aria-label="View notifications">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5">
                 <path d="M12 2.25a5.25 5.25 0 0 0-5.25 5.25v2.325c0 .484-.166.953-.47 1.33l-1.293 1.596a1.875 1.875 0 0 0 1.456 3.054h11.123a1.875 1.875 0 0 0 1.456-3.054l-1.293-1.595a2.122 2.122 0 0 1-.47-1.33V7.5A5.25 5.25 0 0 0 12 2.25Z" />
                 <path d="M9.75 18a2.25 2.25 0 1 0 4.5 0h-4.5Z" />
             </svg>
+            <span class="js-nav-notification-badge absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">2</span>
         </button>
 
         <div class="rounded-full bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-600 ring-1 ring-slate-200">Next check-in in 3 days</div>

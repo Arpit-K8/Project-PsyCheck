@@ -179,8 +179,8 @@
                     <article class="rounded-[32px] bg-white p-8 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
                         <div class="flex items-center justify-between">
                             <div>
-                                <p class="text-2xl font-extrabold text-slate-900">Your weekly trend</p>
-                                <p class="mt-1 text-sm text-slate-500">A simple view of how you have been feeling</p>
+                                <p class="text-2xl font-extrabold text-slate-900">Your weekly wellness score trend</p>
+                                <p class="mt-1 text-sm text-slate-500">Daily mental wellbeing score tracking (0-100 scale)</p>
                             </div>
                             <span class="rounded-full bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">last 7 days</span>
                         </div>
@@ -189,14 +189,61 @@
                             $trendBars = [42, 55, 48, 66, 58, 71, 76];
                             $trendLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                         @endphp
+                        
+                        <!-- Graph Legend & Scale Reference -->
+                        <div class="mt-6 grid grid-cols-3 gap-4 rounded-2xl bg-slate-50 p-4">
+                            <div class="text-center">
+                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Scale</p>
+                                <p class="mt-1 text-sm font-bold text-slate-600">0 - 100</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Bar Height</p>
+                                <p class="mt-1 text-sm font-bold text-slate-600">Daily Score</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Bar Color</p>
+                                <div class="mt-1 h-2 w-full rounded-full bg-fuchsia-600"></div>
+                            </div>
+                        </div>
+
                         <div class="mt-8 rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5">
-                            <div class="flex h-72 items-end gap-4">
-                                @foreach ($trendBars as $index => $height)
-                                    <div class="flex flex-1 flex-col items-center justify-end gap-3">
-                                        <div class="w-full max-w-[34px] rounded-t-full bg-gradient-to-t from-fuchsia-600 via-rose-500 to-fuchsia-400 shadow-[0_12px_28px_rgba(190,24,93,.22)]" style="height: {{ $height * 2 }}px"></div>
-                                        <span class="text-xs font-semibold text-slate-400">{{ $trendLabels[$index] }}</span>
-                                    </div>
-                                @endforeach
+                            <!-- Y-axis scale indicator -->
+                            <div class="relative flex h-72 items-end gap-4">
+                                <!-- Score markers on the left -->
+                                <div class="absolute left-0 top-0 flex h-72 flex-col justify-between text-[10px] font-semibold text-slate-300">
+                                    <span>100</span>
+                                    <span>75</span>
+                                    <span>50</span>
+                                    <span>25</span>
+                                    <span>0</span>
+                                </div>
+                                
+                                <!-- Bar chart container with left padding for scale -->
+                                <div class="ml-8 flex w-full items-end gap-4">
+                                    @foreach ($trendBars as $index => $height)
+                                        <div class="flex flex-1 flex-col items-center justify-end gap-3">
+                                            <!-- Bar with score tooltip on hover -->
+                                            <div 
+                                                class="group relative w-full max-w-[34px] rounded-t-full bg-fuchsia-600 shadow-[0_12px_28px_rgba(114,29,100,.22)] transition hover:shadow-[0_16px_36px_rgba(114,29,100,.28)] hover:bg-fuchsia-700" 
+                                                style="height: {{ $height * 2 }}px"
+                                                title="Score: {{ $height }}/100"
+                                            >
+                                                <!-- Score value tooltip -->
+                                                <span class="absolute -top-7 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-slate-900 px-2 py-1 text-xs font-bold text-white opacity-0 transition group-hover:opacity-100">{{ $height }}</span>
+                                            </div>
+                                            <!-- Day label -->
+                                            <span class="text-xs font-semibold text-slate-600">{{ $trendLabels[$index] }}</span>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart interpretation guide -->
+                        <div class="mt-5 flex gap-4 rounded-2xl bg-fuchsia-50 p-4 ring-1 ring-fuchsia-100">
+                            <div class="flex-1">
+                                <p class="text-xs font-semibold uppercase tracking-[0.16em] text-fuchsia-600">How to read this graph</p>
+                                <p class="mt-2 text-sm text-slate-700">Each bar represents your daily wellness score. Taller bars indicate better mental wellbeing. Your trend shows steady improvement from &nbsp;<span class="font-bold text-fuchsia-700">42 (Mon)</span> to <span class="font-bold text-fuchsia-700">76 (Sun)</span>.</p>
                             </div>
                         </div>
                     </article>
@@ -254,18 +301,52 @@
                             <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Notifications</p>
                             <h3 class="mt-2 text-2xl font-extrabold text-slate-900">Recent alerts</h3>
                         </div>
-                        <span class="rounded-full bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">2 new</span>
+                        <span class="js-notification-badge rounded-full bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">2 new</span>
                     </div>
 
-                    <div class="mt-6 space-y-3">
-                        <div class="rounded-2xl bg-fuchsia-50 px-4 py-4 ring-1 ring-fuchsia-100">
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-fuchsia-600">Score update</p>
-                            <p class="mt-2 text-sm font-semibold text-slate-700">Your latest mind score is <span class="font-black text-fuchsia-700">75%</span>, up from last check-in.</p>
+                    <div class="js-notifications-container mt-6 space-y-3 max-h-96 overflow-y-auto pr-2 [scrollbar-width:thin] [scrollbar-color:rgba(226,232,240,0.5)_transparent] hover:[scrollbar-color:rgba(148,163,184,0.5)_transparent]">
+                        <!-- Score update notification -->
+                        <div class="js-notification-item group rounded-2xl bg-fuchsia-50 px-4 py-4 ring-1 ring-fuchsia-100 transition hover:shadow-md" data-notification-id="1">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-fuchsia-600">Score update</p>
+                                    <p class="mt-2 text-sm font-semibold text-slate-700">Your latest mind score is <span class="font-black text-fuchsia-700">75%</span>, up from last check-in.</p>
+                                </div>
+                                <div class="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
+                                    <button type="button" class="js-mark-read flex h-7 w-7 items-center justify-center rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition" title="Mark as read">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    </button>
+                                    <button type="button" class="js-dismiss flex h-7 w-7 items-center justify-center rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition" title="Dismiss">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <div class="rounded-2xl bg-rose-50 px-4 py-4 ring-1 ring-rose-100">
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-600">Check-in late</p>
-                            <p class="mt-2 text-sm font-semibold text-slate-700">Your check-in is overdue by 1 day. Complete today to keep trend data accurate.</p>
+                        <!-- Check-in late notification -->
+                        <div class="js-notification-item group rounded-2xl bg-rose-50 px-4 py-4 ring-1 ring-rose-100 transition hover:shadow-md" data-notification-id="2">
+                            <div class="flex items-start justify-between gap-3">
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-600">Check-in late</p>
+                                    <p class="mt-2 text-sm font-semibold text-slate-700">Your check-in is overdue by 1 day. Complete today to keep trend data accurate.</p>
+                                </div>
+                                <div class="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
+                                    <button type="button" class="js-mark-read flex h-7 w-7 items-center justify-center rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition" title="Mark as read">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    </button>
+                                    <button type="button" class="js-dismiss flex h-7 w-7 items-center justify-center rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition" title="Dismiss">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Empty state (hidden by default) -->
+                        <div class="js-empty-state hidden flex items-center justify-center rounded-2xl bg-slate-50 px-4 py-8 text-center ring-1 ring-slate-200">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-500">All caught up!</p>
+                                <p class="mt-1 text-xs text-slate-400">No new notifications</p>
+                            </div>
                         </div>
                     </div>
                 </article>
@@ -392,6 +473,76 @@
     </div>
 
     <script>
+        // Notification handler
+        document.addEventListener('DOMContentLoaded', function () {
+            const notificationsContainer = document.querySelector('.js-notifications-container');
+            const notificationBadge = document.querySelector('.js-notification-badge');
+            const navBellBadge = document.querySelector('.js-nav-notification-badge');
+            const emptyState = document.querySelector('.js-empty-state');
+            let unreadCount = 2;
+
+            if (!notificationsContainer) return;
+
+            // Handle mark as read buttons
+            document.querySelectorAll('.js-mark-read').forEach(button => {
+                button.addEventListener('click', function () {
+                    const notification = this.closest('.js-notification-item');
+                    notification.style.opacity = '0.6';
+                    notification.style.pointerEvents = 'none';
+                    this.closest('.js-notification-item').classList.add('opacity-60');
+                    
+                    unreadCount--;
+                    updateBadge();
+                });
+            });
+
+            // Handle dismiss buttons
+            document.querySelectorAll('.js-dismiss').forEach(button => {
+                button.addEventListener('click', function () {
+                    const notification = this.closest('.js-notification-item');
+                    notification.style.transition = 'all 0.3s ease';
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateX(10px)';
+                    
+                    setTimeout(() => {
+                        notification.remove();
+                        unreadCount--;
+                        updateBadge();
+                    }, 300);
+                });
+            });
+
+            function updateBadge() {
+                if (unreadCount <= 0) {
+                    notificationBadge.textContent = 'all caught up';
+                    notificationBadge.classList.remove('bg-rose-50', 'text-rose-700');
+                    notificationBadge.classList.add('bg-green-50', 'text-green-700');
+                    
+                    // Update navbar bell badge
+                    if (navBellBadge) {
+                        navBellBadge.textContent = '0';
+                        navBellBadge.classList.add('hidden');
+                    }
+                    
+                    // Show empty state
+                    if (document.querySelectorAll('.js-notification-item:not(.hidden)').length === 0) {
+                        emptyState.classList.remove('hidden');
+                    }
+                } else {
+                    notificationBadge.textContent = unreadCount + ' new';
+                    notificationBadge.classList.add('bg-rose-50', 'text-rose-700');
+                    notificationBadge.classList.remove('bg-green-50', 'text-green-700');
+                    
+                    // Update navbar bell badge
+                    if (navBellBadge) {
+                        navBellBadge.textContent = unreadCount;
+                        navBellBadge.classList.remove('hidden');
+                    }
+                }
+            }
+        });
+
+        // Wellness slider
         document.addEventListener('DOMContentLoaded', function () {
             const slider = document.getElementById('wellness-slider');
             if (!slider) {
