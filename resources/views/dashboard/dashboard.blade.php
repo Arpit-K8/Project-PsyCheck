@@ -49,12 +49,27 @@
                                 </div>
                             </div>
 
+                            @php
+                                $latestMindResult = \App\Models\AssessmentResult::where('user_id', auth()->id())
+                                    ->where('module_name', 'mind')
+                                    ->orderBy('created_at', 'desc')
+                                    ->first();
+                                $dashScore1 = $latestMindResult ? $latestMindResult->score : 0;
+                                $dashCircumference = 666.02;
+                                $dashOffset1 = $dashCircumference - ($dashScore1 / 100) * $dashCircumference;
+                            @endphp
                             <div class="mt-8 flex justify-center">
-                                <div class="relative flex h-64 w-64 items-center justify-center rounded-full bg-white shadow-inner shadow-fuchsia-100">
-                                    <div class="absolute inset-4 rounded-full border-[16px] border-fuchsia-100 border-t-fuchsia-600 border-r-rose-500 border-b-fuchsia-100 border-l-fuchsia-100"></div>
-                                    <div class="text-center">
-                                        <p class="text-5xl font-black tracking-tight text-slate-900">75%</p>
-                                        <p class="mt-3 text-sm font-semibold uppercase tracking-[0.24em] text-fuchsia-600">Mind balance</p>
+                                <div class="relative flex h-64 w-64 items-center justify-center rounded-full bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] shadow-inner shadow-fuchsia-100">
+                                    <svg class="absolute inset-0 h-full w-full -rotate-90 transform" viewBox="0 0 240 240">
+                                        <circle cx="120" cy="120" r="106" stroke="#fae8ff" stroke-width="16" fill="none" />
+                                        <circle cx="120" cy="120" r="106" stroke="#c026d3" stroke-width="16" fill="none" stroke-linecap="round" 
+                                                stroke-dasharray="666.02" 
+                                                stroke-dashoffset="{{ $dashOffset1 }}" 
+                                                class="transition-all duration-1000 ease-out" />
+                                    </svg>
+                                    <div class="text-center relative z-10 px-4">
+                                        <p class="text-5xl font-black tracking-tight text-slate-900">{{ $dashScore1 }}%</p>
+                                        <p class="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Mind balance</p>
                                     </div>
                                 </div>
                             </div>
@@ -262,7 +277,7 @@
                     
                     <div class="mt-6 rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-6 ring-1 ring-fuchsia-100">
                         <div class="flex items-center gap-4">
-                            <div class="flex h-16 w-16 items-center justify-center rounded-3xl bg-gradient-to-br from-fuchsia-600 to-rose-500 text-2xl font-black text-white shadow-[0_12px_30px_rgba(194,37,112,.28)]">
+                            <div class="flex h-16 w-16 items-center justify-center rounded-3xl bg-fuchsia-600 text-2xl font-black text-white shadow-[0_12px_30px_rgba(194,37,112,.28)]">
                                 {{ strtoupper(substr(auth()->user()->name ?? 'U', 0, 1)) }}
                             </div>
                             <div>
@@ -360,12 +375,22 @@
                         <div class="rounded-2xl bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">active</div>
                     </div>
 
+                    @php
+                        $dashScore2 = $latestMindResult ? $latestMindResult->score : 0;
+                        $dashOffset2 = $dashCircumference - ($dashScore2 / 100) * $dashCircumference;
+                    @endphp
                     <div class="mt-6 flex justify-center">
-                        <div class="relative flex h-56 w-56 items-center justify-center rounded-full bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] shadow-inner shadow-fuchsia-100">
-                            <div class="absolute inset-4 rounded-full border-[14px] border-fuchsia-100 border-t-fuchsia-600 border-r-rose-500 border-b-fuchsia-100 border-l-fuchsia-100"></div>
-                            <div class="text-center">
-                                <p class="text-5xl font-black text-slate-900">75%</p>
-                                <p class="mt-2 text-sm font-semibold uppercase tracking-[0.24em] text-fuchsia-600">mind balance</p>
+                        <div class="relative flex h-64 w-64 items-center justify-center rounded-full bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] shadow-inner shadow-fuchsia-100">
+                            <svg class="absolute inset-0 h-full w-full -rotate-90 transform" viewBox="0 0 240 240">
+                                <circle cx="120" cy="120" r="106" stroke="#fae8ff" stroke-width="16" fill="none" />
+                                <circle cx="120" cy="120" r="106" stroke="#c026d3" stroke-width="16" fill="none" stroke-linecap="round" 
+                                        stroke-dasharray="666.02" 
+                                        stroke-dashoffset="{{ $dashOffset2 }}" 
+                                        class="transition-all duration-1000 ease-out" />
+                            </svg>
+                            <div class="text-center relative z-10 px-4">
+                                <p class="text-5xl font-black text-slate-900">{{ $dashScore2 }}%</p>
+                                <p class="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">mind balance</p>
                             </div>
                         </div>
                     </div>
