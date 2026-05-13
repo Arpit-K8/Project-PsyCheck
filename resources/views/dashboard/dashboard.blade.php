@@ -102,17 +102,17 @@
                     </div>
 
                     <div class="mt-6 grid gap-4 md:grid-cols-3">
-                        <a href="{{ route('assessment.start', ['track' => 'body']) }}" class="group rounded-[24px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100 transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(190,24,93,.16)]">
-                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Body</p>
-                            <h3 class="mt-2 text-xl font-black text-slate-900">Body Assessment</h3>
-                            <p class="mt-2 text-sm text-slate-600">Check physical wellbeing, sleep rhythm, and daily energy level.</p>
-                            <p class="mt-4 text-sm font-semibold text-fuchsia-700 group-hover:text-fuchsia-800">Start now -></p>
-                        </a>
-
                         <a href="{{ route('assessment.start', ['track' => 'mind']) }}" class="group rounded-[24px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100 transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(190,24,93,.16)]">
                             <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Mind</p>
                             <h3 class="mt-2 text-xl font-black text-slate-900">Mind Assessment</h3>
                             <p class="mt-2 text-sm text-slate-600">Measure mood, stress patterns, and emotional balance today.</p>
+                            <p class="mt-4 text-sm font-semibold text-fuchsia-700 group-hover:text-fuchsia-800">Start now -></p>
+                        </a>
+                        
+                        <a href="{{ route('assessment.start', ['track' => 'body']) }}" class="group rounded-[24px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100 transition hover:-translate-y-1 hover:shadow-[0_12px_28px_rgba(190,24,93,.16)]">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Body</p>
+                            <h3 class="mt-2 text-xl font-black text-slate-900">Body Assessment</h3>
+                            <p class="mt-2 text-sm text-slate-600">Check physical wellbeing, sleep rhythm, and daily energy level.</p>
                             <p class="mt-4 text-sm font-semibold text-fuchsia-700 group-hover:text-fuchsia-800">Start now -></p>
                         </a>
 

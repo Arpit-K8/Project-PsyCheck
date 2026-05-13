@@ -49,10 +49,26 @@
 	@endphp
 
     <div class="mx-auto max-w-7xl px-4 py-8 sm:px-8 lg:px-10">
-        <a href="{{ route('dashboard') }}#assessment-menus" class="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-sm font-semibold text-fuchsia-700 ring-1 ring-fuchsia-100 transition hover:bg-white hover:text-fuchsia-800 hover:shadow-sm">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-            Back to dashboard
-        </a>
+        <!-- Navigation Header -->
+        <header class="mb-6 flex flex-col sm:flex-row items-center justify-between gap-4 rounded-[32px] bg-white/80 px-6 py-3 shadow-[0_20px_60px_rgba(89,29,63,.12)] backdrop-blur">
+            <div class="flex items-center group w-full sm:w-auto">
+                <img src="{{ asset('images/Logo.png') }}"
+                    alt="PsyCheck logo"
+                    class="h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 shrink-0 object-cover transition-transform duration-300 group-hover:scale-105 group-hover:drop-shadow-lg" />
+
+                <div class="flex flex-col ml-1">
+                    <p class="text-lg sm:text-xl font-bold text-fuchsia-700">PsyCheck</p>
+                    <p class="text-[10px] sm:text-xs uppercase tracking-[0.22em] text-slate-400">Mental Wellness Platform</p>
+                </div>
+            </div>
+
+            <div class="w-full sm:w-auto flex justify-end">
+                <a href="{{ route('dashboard') }}#assessment-menus" class="inline-flex items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-fuchsia-700 shadow-sm ring-1 ring-fuchsia-100 transition hover:bg-fuchsia-50 hover:text-fuchsia-800">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                    Back to dashboard
+                </a>
+            </div>
+        </header>
 
         <!-- Instruction Section -->
         <section class="mt-8 mb-10">
