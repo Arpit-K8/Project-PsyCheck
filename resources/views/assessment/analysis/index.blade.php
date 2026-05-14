@@ -431,7 +431,7 @@
                                         <p class="text-sm font-black text-slate-800"><span id="credit-count" class="{{ $creditsRemaining > 0 ? 'text-emerald-600' : 'text-rose-600' }}">{{ $creditsRemaining }}</span> / 2</p>
                                     </div>
                                     <div class="h-8 w-px bg-slate-200"></div>
-                                    <button id="start-ai-btn" class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-fuchsia-600 to-rose-600 px-5 py-2.5 text-sm font-bold text-white transition-all hover:scale-105 hover:shadow-[0_10px_20px_rgba(225,29,72,.25)] disabled:opacity-50 disabled:pointer-events-none group/btn">
+                                    <button id="start-ai-btn" class="inline-flex items-center gap-2 rounded-xl bg-fuchsia-600 px-5 py-2.5 text-sm font-bold text-white transition-all hover:scale-105 hover:shadow-[0_10px_20px_rgba(225,29,72,.25)] disabled:opacity-50 disabled:pointer-events-none group/btn">
                                         <span>Generate Now</span>
                                         <svg class="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                                     </button>
