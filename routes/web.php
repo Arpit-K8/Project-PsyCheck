@@ -22,6 +22,7 @@ Route::get('/assessment/start', function (\Illuminate\Http\Request $request) {
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/assessment/{track}/exam', [\App\Http\Controllers\AssessmentController::class, 'showExam'])->name('assessment.exam');
     Route::post('/assessment/{track}/exam', [\App\Http\Controllers\AssessmentController::class, 'submitExam'])->name('assessment.exam.submit');
+    Route::post('/assessment/ai-analysis', [\App\Http\Controllers\AssessmentController::class, 'generateAiAnalysis'])->name('assessment.ai-analysis');
 });
 
 Route::middleware('auth')->group(function () {

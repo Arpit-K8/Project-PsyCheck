@@ -16,7 +16,157 @@
 </head>
 <body class="min-h-screen bg-[#f8ebf1] bg-[radial-gradient(circle_at_50%_-20%,#b23673_0,#e39fb8_34%,#f8ebf1_82%)] text-slate-800 antialiased selection:bg-fuchsia-200 selection:text-fuchsia-900">
     <div class="mx-auto min-h-screen max-w-7xl px-4 pb-10 pt-6 sm:px-8 lg:px-10">
+        @php
+            $latestMindResult = \App\Models\AssessmentResult::where('user_id', auth()->id())
+                ->where('module_name', 'mind')
+                ->orderBy('created_at', 'desc')
+                ->first();
+            $latestBodyResult = \App\Models\AssessmentResult::where('user_id', auth()->id())
+                ->where('module_name', 'body')
+                ->orderBy('created_at', 'desc')
+                ->first();
+
+            $dashScore1 = $latestMindResult ? $latestMindResult->score : 0;
+            $bodyScore = $latestBodyResult ? $latestBodyResult->score : 0;
+            $combinedScore = ($dashScore1 + $bodyScore) / 2;
+            
+            $dashCircumference = 666.02;
+            $dashOffset1 = $dashCircumference - ($dashScore1 / 100) * $dashCircumference;
+            $dashOffset2 = $dashCircumference - ($combinedScore / 100) * $dashCircumference;
+            
+            // Mood balance (1-10)
+            $moodBalance = $latestMindResult ? number_format($dashScore1 / 10, 1) : 'N/A';
+            $moodDiff = $latestMindResult ? '+0.0' : ''; // simplified for now
+            
+            // Stress load
+            $stressLoad = $latestMindResult ? $latestMindResult->stress : 'No Data';
+            $stressStr = strtolower($stressLoad);
+            $stressDesc = match(true) {
+                str_contains($stressStr, 'low') => 'manageable today',
+                str_contains($stressStr, 'moderate') => 'approaching limit',
+                str_contains($stressStr, 'high') || str_contains($stressStr, 'severe') => 'requires attention',
+                default => 'take an assessment'
+            };
+            $stressColorClass = match(true) {
+                str_contains($stressStr, 'low') => 'text-rose-500',
+                str_contains($stressStr, 'moderate') => 'text-fuchsia-600',
+                str_contains($stressStr, 'high') || str_contains($stressStr, 'severe') => 'text-slate-900',
+                default => 'text-slate-500'
+            };
+            $stressBgClass = match(true) {
+                str_contains($stressStr, 'low') => 'bg-rose-50 text-rose-600',
+                str_contains($stressStr, 'moderate') => 'bg-fuchsia-50 text-fuchsia-600',
+                str_contains($stressStr, 'high') || str_contains($stressStr, 'severe') => 'bg-slate-100 text-slate-700',
+                default => 'bg-slate-50 text-slate-600'
+            };
+
+            // Sleep quality
+            $sleepQuality = $latestBodyResult ? number_format($bodyScore / 10, 1) : 'N/A';
+            
+            // Next check-in
+            $lastCheckin = $latestMindResult ? $latestMindResult->created_at : null;
+            $daysSince = $lastCheckin ? $lastCheckin->diffInDays(now()) : 0;
+            $daysUntil = round(max(0, 3 - $daysSince));
+            $checkinText = $latestMindResult ? ($daysUntil > 0 ? $daysUntil . 'd' : 'Today') : 'Now';
+            
+            // Recommendations
+            if ($combinedScore == 0) {
+                $recTitle = "Action Required: Take Assessments";
+                $recDesc = "Please give your test first of both modules. This allows PsyCheck and the AI Analysis module to dynamically generate your personalized wellness steps.";
+                $recStep1 = "1. Take the Mind Assessment";
+                $recStep2 = "2. Take the Body Assessment";
+                $recStep3 = "3. Unlock PRO AI Analysis";
+            } else {
+                if ($dashScore1 < 50) {
+                    $recTitle = "Cognitive Decompression";
+                    $recDesc = "Your mind score (" . $dashScore1 . "%) and " . strtolower($latestMindResult->stress ?? 'high') . " stress levels indicate cognitive load. Prioritize mental rest.";
+                    $recStep1 = "1. Try a 10 minute breathing session";
+                    $recStep2 = "2. Digital detox 1 hour before bed";
+                    $recStep3 = "3. Run PRO AI Analysis for deeper insights";
+                } elseif ($bodyScore < 50) {
+                    $recTitle = "Somatic Recovery";
+                    $recDesc = "Your physical vitality (" . $bodyScore . "%) is lagging. Focus on sleep and physical rest to restore energy reserves.";
+                    $recStep1 = "1. Prioritize 8 hours of sleep tonight";
+                    $recStep2 = "2. Do 5 minutes of light stretching";
+                    $recStep3 = "3. Run PRO AI Analysis for customized steps";
+                } else {
+                    $recTitle = "Maintain Optimal Flow";
+                    $recDesc = "Both mind (" . $dashScore1 . "%) and body (" . $bodyScore . "%) are in sync. Stick to your routines and preserve this " . strtolower($latestMindResult->mood ?? 'good') . " mood.";
+                    $recStep1 = "1. Continue your current sleep schedule";
+                    $recStep2 = "2. Log your mood to track this peak state";
+                    $recStep3 = "3. Run PRO AI Analysis to optimize further";
+                }
+            }
+
+            // Personal status
+            if ($combinedScore == 0) {
+                $statusTitle = 'Pending baseline';
+                $statusLabel = 'setup';
+                $statusBg = 'bg-slate-50 text-slate-700';
+                $statusColorClass = 'text-slate-600';
+            } else {
+                $statusTitle = $combinedScore >= 70 ? 'You are on track' : ($combinedScore >= 40 ? 'Needs Calibration' : 'Critical Action Needed');
+                $statusLabel = $combinedScore >= 70 ? 'active' : 'attention';
+                $statusBg = $combinedScore >= 70 ? 'bg-fuchsia-50 text-fuchsia-700' : 'bg-rose-50 text-rose-700';
+                $statusColorClass = $combinedScore >= 70 ? 'text-fuchsia-600' : 'text-rose-600';
+            }
+
+            $snapshotHeader = $combinedScore >= 60 ? 'Stable and improving' : ($combinedScore > 0 ? 'Needs attention' : 'Ready for tracking');
+
+            // Weekly Trend Logic
+            $trendBars = [];
+            $trendLabels = [];
+            $startDate = now()->subDays(6)->startOfDay();
+            
+            $weeklyResults = \App\Models\AssessmentResult::where('user_id', auth()->id())
+                ->where('created_at', '>=', $startDate)
+                ->get()
+                ->groupBy(function($date) {
+                    return \Carbon\Carbon::parse($date->created_at)->format('D'); // e.g. 'Mon'
+                });
+
+            // Fill array to maintain 7 days order
+            for ($i = 6; $i >= 0; $i--) {
+                $day = now()->subDays($i);
+                $dayName = $day->format('D');
+                $trendLabels[] = $dayName;
+                
+                if ($weeklyResults->has($dayName)) {
+                    $avgScore = $weeklyResults->get($dayName)->avg('score');
+                    $trendBars[] = round($avgScore);
+                } else {
+                    $trendBars[] = 0;
+                }
+            }
+
+            // Notifications Logic
+            $notifications = [];
+            
+            if ($daysSince >= 2) {
+                $notifications[] = [
+                    'id' => 'overdue_1',
+                    'bgClass' => 'bg-rose-50',
+                    'ringClass' => 'ring-rose-100',
+                    'textClass' => 'text-rose-600',
+                    'title' => 'Check-in overdue',
+                    'message' => 'You haven\'t taken an assessment in ' . floor($daysSince) . ' days. Complete one today to keep your trend data accurate.'
+                ];
+            }
+            
+            if ($latestMindResult && $daysSince < 2) {
+                $notifications[] = [
+                    'id' => 'score_update_1',
+                    'bgClass' => 'bg-fuchsia-50',
+                    'ringClass' => 'ring-fuchsia-100',
+                    'textClass' => 'text-fuchsia-600',
+                    'title' => 'Score update',
+                    'message' => 'Your latest mind score is <span class="font-black text-fuchsia-700">' . $latestMindResult->score . '%</span>. Keep up the momentum!'
+                ];
+            }
+        @endphp
+
         @include('layouts.dashboard-navigation')
+
         <main class="grid gap-6 xl:grid-cols-[minmax(0,1.45fr)_minmax(320px,0.95fr)]">
             <section class="space-y-6">
                 <article class="overflow-hidden rounded-[36px] bg-white shadow-[0_24px_70px_rgba(89,29,63,.14)]">
@@ -25,7 +175,7 @@
                             <div class="absolute right-6 top-6 h-24 w-24 rounded-full bg-[radial-gradient(circle,#e39fb8_2px,transparent_2px)] bg-[length:18px_18px] opacity-45"></div>
                             <p class="text-sm font-bold uppercase tracking-[0.28em] text-fuchsia-600">Wellness Snapshot</p>
                             <h1 class="mt-4 max-w-xl text-4xl font-black leading-tight text-slate-900 sm:text-5xl">
-                                Your mind health is doing <span class="text-fuchsia-700">better than last week</span>.
+                                Your holistic health is <span class="text-fuchsia-700">{{ strtolower($snapshotHeader) }}</span>.
                             </h1>
                             <p class="mt-5 max-w-lg text-lg leading-8 text-slate-600">
                                 PsyCheck gives you a personal view of your mental wellbeing, current mood, stress, and the next step that fits your results.
@@ -45,19 +195,10 @@
                             <div class="flex items-center justify-between">
                                 <div>
                                     <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Current status</p>
-                                    <p class="mt-2 text-xl font-extrabold text-slate-900">Stable and improving</p>
+                                    <p class="mt-2 text-xl font-extrabold text-slate-900">{{ $snapshotHeader }}</p>
                                 </div>
                             </div>
 
-                            @php
-                                $latestMindResult = \App\Models\AssessmentResult::where('user_id', auth()->id())
-                                    ->where('module_name', 'mind')
-                                    ->orderBy('created_at', 'desc')
-                                    ->first();
-                                $dashScore1 = $latestMindResult ? $latestMindResult->score : 0;
-                                $dashCircumference = 666.02;
-                                $dashOffset1 = $dashCircumference - ($dashScore1 / 100) * $dashCircumference;
-                            @endphp
                             <div class="mt-8 flex justify-center">
                                 <div class="relative flex h-64 w-64 items-center justify-center rounded-full bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] shadow-inner shadow-fuchsia-100">
                                     <svg class="absolute inset-0 h-full w-full -rotate-90 transform" viewBox="0 0 240 240">
@@ -77,15 +218,15 @@
                             <div class="mt-8 flex flex-col gap-3">
                                 <div class="rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-fuchsia-100/70 flex items-center justify-between">
                                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Mood</p>
-                                    <p class="text-xl font-black text-fuchsia-700">Good</p>
+                                    <p class="text-xl font-black text-fuchsia-700">{{ $latestMindResult ? ucfirst(strtolower($latestMindResult->mood)) : 'N/A' }}</p>
                                 </div>
                                 <div class="rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-fuchsia-100/70 flex items-center justify-between">
                                     <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Stress</p>
-                                    <p class="text-xl font-black text-rose-500">Low</p>
+                                    <p class="text-xl font-black {{ $stressColorClass }}">{{ ucfirst(strtolower($stressLoad)) }}</p>
                                 </div>
                                 <div class="rounded-2xl bg-white px-5 py-4 shadow-sm ring-1 ring-fuchsia-100/70 flex items-center justify-between">
-                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Sleep</p>
-                                    <p class="text-xl font-black text-fuchsia-700">Fair</p>
+                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Vitality</p>
+                                    <p class="text-xl font-black text-fuchsia-700">{{ $latestBodyResult ? ucfirst(strtolower($latestBodyResult->mood)) : 'N/A' }}</p>
                                 </div>
                             </div>
                         </div>
@@ -130,10 +271,12 @@
                         <p class="text-sm font-semibold text-slate-500">Mood balance</p>
                         <div class="mt-4 flex items-end justify-between gap-4">
                             <div>
-                                <p class="text-4xl font-black text-fuchsia-700">8.2</p>
+                                <p class="text-4xl font-black text-fuchsia-700">{{ $moodBalance }}</p>
                                 <p class="mt-1 text-sm text-slate-400">out of 10</p>
                             </div>
-                            <div class="rounded-2xl bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">+0.6</div>
+                            @if($moodBalance !== 'N/A')
+                                <div class="rounded-2xl bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700 whitespace-nowrap">{{ $dashScore1 >= 50 ? 'Good' : 'Fair' }}</div>
+                            @endif
                         </div>
                     </article>
 
@@ -141,21 +284,21 @@
                         <p class="text-sm font-semibold text-slate-500">Stress load</p>
                         <div class="mt-4 flex items-end justify-between gap-4">
                             <div>
-                                <p class="text-4xl font-black text-rose-500">Low</p>
-                                <p class="mt-1 text-sm text-slate-400">manageable today</p>
+                                <p class="text-3xl tracking-tight sm:text-4xl font-black leading-none {{ $stressColorClass }}">{{ ucfirst(strtolower($stressLoad)) }}</p>
+                                <p class="mt-2 text-sm text-slate-400">{{ $stressDesc }}</p>
                             </div>
-                            <div class="rounded-2xl bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-600">-12%</div>
+                            <div class="rounded-2xl {{ $stressBgClass }} px-3 py-2 text-sm font-semibold whitespace-nowrap">{{ $dashScore1 > 0 ? 'logged' : 'N/A' }}</div>
                         </div>
                     </article>
 
                     <article class="rounded-[28px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70 transition hover:-translate-y-1">
-                        <p class="text-sm font-semibold text-slate-500">Sleep quality</p>
+                        <p class="text-sm font-semibold text-slate-500">Vitality & Sleep</p>
                         <div class="mt-4 flex items-end justify-between gap-4">
                             <div>
-                                <p class="text-4xl font-black text-fuchsia-700">7.1</p>
-                                <p class="mt-1 text-sm text-slate-400">last 7 nights</p>
+                                <p class="text-4xl font-black text-fuchsia-700">{{ $sleepQuality }}</p>
+                                <p class="mt-1 text-sm text-slate-400">out of 10</p>
                             </div>
-                            <div class="rounded-2xl bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">steady</div>
+                            <div class="rounded-2xl bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700 whitespace-nowrap">steady</div>
                         </div>
                     </article>
 
@@ -163,8 +306,8 @@
                         <p class="text-sm font-semibold text-slate-500">Next check-in</p>
                         <div class="mt-4 flex items-end justify-between gap-4">
                             <div>
-                                <p class="text-4xl font-black text-slate-900">3d</p>
-                                <p class="mt-1 text-sm text-slate-400">keep tracking progress</p>
+                                <p class="text-4xl font-black text-slate-900">{{ $checkinText }}</p>
+                                <p class="mt-1 text-sm text-slate-400">{{ $checkinText === 'Today' ? 'due now' : 'keep tracking progress' }}</p>
                             </div>
                             <div class="rounded-2xl bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">reminder on</div>
                         </div>
@@ -177,14 +320,14 @@
 
                         <div class="mt-6 rounded-[28px] bg-fuchsia-50 p-5 ring-1 ring-fuchsia-100">
                             <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Focus area</p>
-                            <h2 class="mt-3 text-3xl font-black text-slate-900">Mood support and rest</h2>
+                            <h2 class="mt-3 text-3xl font-black text-slate-900">{{ $recTitle }}</h2>
                             <p class="mt-3 text-base leading-7 text-slate-600">
-                                Your score suggests a stable but slightly tired state. A short rest routine, a lighter evening screen schedule, and one calming activity can help.
+                                {{ $recDesc }}
                             </p>
                             <div class="mt-5 space-y-3">
-                                <div class="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-fuchsia-100">1. Try a 10 minute breathing session</div>
-                                <div class="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-fuchsia-100">2. Keep your sleep time consistent tonight</div>
-                                <div class="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-fuchsia-100">3. Recheck your mood after 3 days</div>
+                                <div class="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-fuchsia-100">{{ $recStep1 }}</div>
+                                <div class="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-fuchsia-100">{{ $recStep2 }}</div>
+                                <div class="rounded-2xl bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm ring-1 ring-fuchsia-100">{{ $recStep3 }}</div>
                             </div>
                         </div>
                     </article>
@@ -200,11 +343,6 @@
                             <span class="rounded-full bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">last 7 days</span>
                         </div>
 
-                        @php
-                            $trendBars = [42, 55, 48, 66, 58, 71, 76];
-                            $trendLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                        @endphp
-                        
                         <!-- Graph Legend & Scale Reference -->
                         <div class="mt-6 grid grid-cols-3 gap-4 rounded-2xl bg-slate-50 p-4">
                             <div class="text-center">
@@ -258,7 +396,7 @@
                         <div class="mt-5 flex gap-4 rounded-2xl bg-fuchsia-50 p-4 ring-1 ring-fuchsia-100">
                             <div class="flex-1">
                                 <p class="text-xs font-semibold uppercase tracking-[0.16em] text-fuchsia-600">How to read this graph</p>
-                                <p class="mt-2 text-sm text-slate-700">Each bar represents your daily wellness score. Taller bars indicate better mental wellbeing. Your trend shows steady improvement from &nbsp;<span class="font-bold text-fuchsia-700">42 (Mon)</span> to <span class="font-bold text-fuchsia-700">76 (Sun)</span>.</p>
+                                <p class="mt-2 text-sm text-slate-700">Each bar represents your daily wellness score based on your assessments. Taller bars indicate better holistic wellbeing and alignment for that specific day.</p>
                             </div>
                         </div>
                     </article>
@@ -316,48 +454,33 @@
                             <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Notifications</p>
                             <h3 class="mt-2 text-2xl font-extrabold text-slate-900">Recent alerts</h3>
                         </div>
-                        <span class="js-notification-badge rounded-full bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700">2 new</span>
+                        <span class="js-notification-badge rounded-full {{ count($notifications) > 0 ? 'bg-rose-50 text-rose-700' : 'bg-green-50 text-green-700' }} px-3 py-2 text-xs font-semibold">
+                            {{ count($notifications) > 0 ? count($notifications) . ' new' : 'all caught up' }}
+                        </span>
                     </div>
 
                     <div class="js-notifications-container mt-6 space-y-3 max-h-96 overflow-y-auto pr-2 [scrollbar-width:thin] [scrollbar-color:rgba(226,232,240,0.5)_transparent] hover:[scrollbar-color:rgba(148,163,184,0.5)_transparent]">
-                        <!-- Score update notification -->
-                        <div class="js-notification-item group rounded-2xl bg-fuchsia-50 px-4 py-4 ring-1 ring-fuchsia-100 transition hover:shadow-md" data-notification-id="1">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-fuchsia-600">Score update</p>
-                                    <p class="mt-2 text-sm font-semibold text-slate-700">Your latest mind score is <span class="font-black text-fuchsia-700">75%</span>, up from last check-in.</p>
-                                </div>
-                                <div class="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
-                                    <button type="button" class="js-mark-read flex h-7 w-7 items-center justify-center rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition" title="Mark as read">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    </button>
-                                    <button type="button" class="js-dismiss flex h-7 w-7 items-center justify-center rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition" title="Dismiss">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Check-in late notification -->
-                        <div class="js-notification-item group rounded-2xl bg-rose-50 px-4 py-4 ring-1 ring-rose-100 transition hover:shadow-md" data-notification-id="2">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="flex-1 min-w-0">
-                                    <p class="text-xs font-semibold uppercase tracking-[0.18em] text-rose-600">Check-in late</p>
-                                    <p class="mt-2 text-sm font-semibold text-slate-700">Your check-in is overdue by 1 day. Complete today to keep trend data accurate.</p>
-                                </div>
-                                <div class="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
-                                    <button type="button" class="js-mark-read flex h-7 w-7 items-center justify-center rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition" title="Mark as read">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                                    </button>
-                                    <button type="button" class="js-dismiss flex h-7 w-7 items-center justify-center rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition" title="Dismiss">
-                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                    </button>
+                        @foreach($notifications as $notif)
+                            <div class="js-notification-item group rounded-2xl {{ $notif['bgClass'] }} px-4 py-4 ring-1 {{ $notif['ringClass'] }} transition hover:shadow-md" data-notification-id="{{ $notif['id'] }}">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-xs font-semibold uppercase tracking-[0.18em] {{ $notif['textClass'] }}">{{ $notif['title'] }}</p>
+                                        <p class="mt-2 text-sm font-semibold text-slate-700">{!! $notif['message'] !!}</p>
+                                    </div>
+                                    <div class="flex items-center gap-2 opacity-0 transition group-hover:opacity-100">
+                                        <button type="button" class="js-mark-read flex h-7 w-7 items-center justify-center rounded-lg bg-green-100 text-green-600 hover:bg-green-200 transition" title="Mark as read">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                        </button>
+                                        <button type="button" class="js-dismiss flex h-7 w-7 items-center justify-center rounded-lg bg-rose-100 text-rose-600 hover:bg-rose-200 transition" title="Dismiss">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        @endforeach
 
-                        <!-- Empty state (hidden by default) -->
-                        <div class="js-empty-state hidden flex items-center justify-center rounded-2xl bg-slate-50 px-4 py-8 text-center ring-1 ring-slate-200">
+                        <!-- Empty state -->
+                        <div class="js-empty-state {{ count($notifications) > 0 ? 'hidden' : '' }} flex items-center justify-center rounded-2xl bg-slate-50 px-4 py-8 text-center ring-1 ring-slate-200">
                             <div>
                                 <p class="text-sm font-semibold text-slate-500">All caught up!</p>
                                 <p class="mt-1 text-xs text-slate-400">No new notifications</p>
@@ -369,16 +492,12 @@
                 <article class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Personal status</p>
-                            <h3 class="mt-2 text-2xl font-extrabold text-slate-900">You are on track</h3>
+                            <p class="text-sm font-bold uppercase tracking-[0.24em] {{ $statusColorClass }}">Personal status</p>
+                            <h3 class="mt-2 text-2xl font-extrabold text-slate-900">{{ $statusTitle }}</h3>
                         </div>
-                        <div class="rounded-2xl bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">active</div>
+                        <div class="rounded-2xl {{ $statusBg }} px-3 py-2 text-sm font-semibold">{{ $statusLabel }}</div>
                     </div>
 
-                    @php
-                        $dashScore2 = $latestMindResult ? $latestMindResult->score : 0;
-                        $dashOffset2 = $dashCircumference - ($dashScore2 / 100) * $dashCircumference;
-                    @endphp
                     <div class="mt-6 flex justify-center">
                         <div class="relative flex h-64 w-64 items-center justify-center rounded-full bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] shadow-inner shadow-fuchsia-100">
                             <svg class="absolute inset-0 h-full w-full -rotate-90 transform" viewBox="0 0 240 240">
@@ -389,8 +508,8 @@
                                         class="transition-all duration-1000 ease-out" />
                             </svg>
                             <div class="text-center relative z-10 px-4">
-                                <p class="text-5xl font-black text-slate-900">{{ $dashScore2 }}%</p>
-                                <p class="mt-2 text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">mind balance</p>
+                                <p class="text-5xl font-black text-slate-900">{{ $combinedScore }}%</p>
+                                <p class="mt-2 text-xs font-semibold uppercase tracking-[0.2em] {{ $statusColorClass }}">Holistic Balance</p>
                             </div>
                         </div>
                     </div>
@@ -398,19 +517,19 @@
                     <div class="mt-6 grid grid-cols-2 gap-3 text-center">
                         <div class="rounded-3xl bg-fuchsia-50 p-4">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Energy</p>
-                            <p class="mt-2 text-2xl font-black text-fuchsia-700">Good</p>
+                            <p class="mt-2 text-2xl font-black text-fuchsia-700">{{ $latestBodyResult ? ucfirst(strtolower($latestBodyResult->mood)) : 'N/A' }}</p>
                         </div>
                         <div class="rounded-3xl bg-fuchsia-50 p-4">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Focus</p>
-                            <p class="mt-2 text-2xl font-black text-fuchsia-700">Stable</p>
+                            <p class="mt-2 text-2xl font-black text-fuchsia-700">{{ $dashScore1 >= 70 ? 'Sharp' : ($dashScore1 >= 40 ? 'Stable' : 'Scattered') }}</p>
                         </div>
                         <div class="rounded-3xl bg-fuchsia-50 p-4">
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Calmness</p>
-                            <p class="mt-2 text-2xl font-black text-rose-500">High</p>
+                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Tension</p>
+                            <p class="mt-2 text-2xl font-black {{ strtolower($latestBodyResult->stress ?? '') === 'high' ? 'text-rose-500' : 'text-fuchsia-700' }}">{{ $latestBodyResult ? ucfirst(strtolower($latestBodyResult->stress)) : 'N/A' }}</p>
                         </div>
                         <div class="rounded-3xl bg-fuchsia-50 p-4">
                             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">Support</p>
-                            <p class="mt-2 text-2xl font-black text-fuchsia-700">Ready</p>
+                            <p class="mt-2 text-2xl font-black text-fuchsia-700">{{ $combinedScore > 0 ? 'Ready' : 'Pending' }}</p>
                         </div>
                     </div>
                 </article>

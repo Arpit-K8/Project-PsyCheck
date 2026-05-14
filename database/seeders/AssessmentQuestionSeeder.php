@@ -13,6 +13,7 @@ class AssessmentQuestionSeeder extends Seeder
     public function run(): void
     {
         AssessmentQuestion::where('module_name', 'mind')->delete();
+        AssessmentQuestion::where('module_name', 'body')->delete();
 
         $options = [
             ['text' => 'Not at all', 'score' => 3, 'type' => 'Ideal'],
@@ -487,5 +488,382 @@ class AssessmentQuestionSeeder extends Seeder
         }
 
         AssessmentQuestion::insert($rows);
+
+        $bodyQuestionBank = [
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt physically exhausted upon waking up?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you needed caffeine or stimulants just to function?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you experienced a "mid-afternoon slump" in energy?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt too tired to engage in social activities?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you struggled to climb a flight of stairs without heavy breathing?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt your limbs were heavy or "leaden"?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you experienced restless or interrupted sleep?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you noticed your physical strength felt lower than usual?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt a desire to nap for more than an hour during the day?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you struggled to maintain your posture while sitting or standing?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt like your body was "running on empty"?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you experienced "brain fog" caused specifically by physical fatigue?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you found it difficult to complete your usual exercise routine?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt a lack of motivation to move your body?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you noticed your skin looking dull or tired?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt cold or unable to regulate your body temperature?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you experienced "heavy eyes" during work or study?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt your reflexes were slower than normal?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you struggled to recover physically after a minor activity?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt a general sense of physical frailty?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you experienced a lack of "zip" or "spark" in your movements?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you found yourself moving more slowly than those around you?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt your body was working harder than it should to perform tasks?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you noticed a decrease in your grip strength?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt the need to sit down frequently throughout the day?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you experienced a lack of physical enthusiasm for hobbies?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt "burnt out" at a physical level?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you found it hard to stay awake in the evening?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you felt that your body is aging faster than you’d like?',
+            ],
+            [
+                'module' => 'Physical Vitality & Energy',
+                'question' => 'How frequently have you experienced a total lack of physical endurance?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt tightness in your jaw or teeth grinding?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced tension headaches starting at the base of the skull?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you noticed your shoulders were "shrugged" up toward your ears?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt sharp or dull pain in your lower back?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced "knots" or trigger points in your upper back?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt stiffness in your neck when turning your head?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you noticed your hands or fists were clenched involuntarily?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt a "band-like" pressure around your forehead?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced tingling or numbness in your extremities?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt "fidgety" or unable to keep your legs still?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you noticed a general ache in your joints?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced muscle spasms or involuntary twitches?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt a "heaviness" or pressure in your chest?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you noticed your facial muscles felt tight or strained?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced discomfort in your wrists or forearms?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt like your body was "on guard" or braced for impact?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced sharp pains that come and go without injury?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you noticed your hips felt tight or restricted?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt physical discomfort from wearing normal clothing?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced sensitivity to touch in certain muscle groups?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you noticed your breathing felt restricted by ribcage tightness?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt a "lump" in your throat or tightness in the neck?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced dull aches in your legs after standing briefly?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt "cracks" or "pops" in your joints accompanied by pain?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you noticed that you cannot fully relax your muscles even when lying down?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced pain that migrates from one part of the body to another?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt physical "grit" or inflammation in your tendons?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you experienced eye strain or pain behind the eyes?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you noticed your abdomen felt tight or "clenched"?',
+            ],
+            [
+                'module' => 'Somatic Tension & Pain',
+                'question' => 'How frequently have you felt physically "stiff as a board" upon rising?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced a racing or pounding heart for no reason?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt "butterflies" or a churning sensation in your stomach?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed your hands were cold or clammy?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced sudden hot flashes or bouts of sweating?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt short of breath or like you couldn\'t get a "full" breath?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced bloating or digestive discomfort after eating?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed a sudden loss of appetite?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced "stress-induced" cravings for salt or sugar?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt dizzy or lightheaded when standing up?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed your mouth felt unusually dry?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced a "sinking feeling" in the pit of your stomach?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt a sudden urgency to use the restroom?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed your skin flushing or becoming blotchy?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced "acid reflux" or heartburn?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt a trembling or shakiness in your hands?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed your heart "skipping a beat" or palpitating?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced sensitivity to loud noises or bright lights?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt nauseous during periods of high activity?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed your pupils felt dilated or sensitive?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced "cold sweats" at night?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt a lack of coordination or "clumsiness"?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed your digestion felt "stalled" or sluggish?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced a heightened "startle" response to small sounds?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt your pulse in your ears or temples?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed an inability to take deep, diaphragmatic breaths?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced a "tight" or "nervous" stomach before tasks?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt your internal body temperature fluctuating wildly?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you noticed your skin feeling "itchy" or hypersensitive?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you experienced a metallic taste in your mouth?',
+            ],
+            [
+                'module' => 'Autonomic Regulation',
+                'question' => 'How frequently have you felt a general sense of being "wired but tired"?',
+            ],
+        ];
+
+        $bodyRows = [];
+        foreach ($bodyQuestionBank as $item) {
+            $bodyRows[] = [
+                'module_name' => 'body',
+                'module' => $item['module'],
+                'question_text' => $item['question'],
+                'options' => json_encode($options),
+                'created_at' => now(),
+                'updated_at' => now(),
+            ];
+        }
+
+        AssessmentQuestion::insert($bodyRows);
     }
 }
