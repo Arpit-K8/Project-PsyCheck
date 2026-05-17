@@ -558,26 +558,38 @@
                 <section class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
                     <div class="flex items-center justify-between">
                         <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Wellness Highlights</p>
-                        <span class="rounded-full bg-fuchsia-50 px-3 py-1 text-xs font-semibold text-fuchsia-700">3 slides</span>
+                        <span class="rounded-full bg-fuchsia-50 px-3 py-1 text-xs font-semibold text-fuchsia-700">5 slides</span>
                     </div>
 
                     <div id="wellness-slider" class="mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
                         <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
-                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Slide 1</p>
-                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Quote of the Day</h3>
-                            <p class="mt-3 text-sm leading-7 text-slate-600">"The greatest wealth is health."</p>
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Quote</p>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">The greatest wealth is health.</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">Small daily habits protect your energy, focus, and peace of mind more than one big effort.</p>
                         </article>
 
                         <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
-                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Slide 2</p>
-                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Achievement</h3>
-                            <p class="mt-3 text-sm leading-7 text-slate-600">We are hitting <span class="font-extrabold text-fuchsia-700">400 followers</span>. Thank you for growing with PsyCheck.</p>
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Reminder</p>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Pause before burnout builds up.</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">Take one short break, drink water, and reset your breathing when the day starts to feel heavy.</p>
                         </article>
 
                         <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
-                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Slide 3</p>
-                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Health Reminder</h3>
-                            <p class="mt-3 text-sm leading-7 text-slate-600">If you are having a problem, go for a checkup with a nearby doctor.</p>
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Achievement</p>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">You are building consistency.</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">Every completed assessment improves your wellness history and gives you more useful insights over time.</p>
+                        </article>
+
+                        <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fff1f6_100%)] p-5 ring-1 ring-fuchsia-100">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Tip</p>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">Protect your sleep window.</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">A calmer evening routine, lower screen time, and a fixed sleep schedule can lift both mood and energy.</p>
+                        </article>
+
+                        <article class="js-wellness-slide min-w-full snap-start rounded-[28px] bg-[linear-gradient(180deg,#fff7fb_0%,#fdf2f8_100%)] p-5 ring-1 ring-fuchsia-100">
+                            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-fuchsia-600">Check-in</p>
+                            <h3 class="mt-2 text-xl font-extrabold text-slate-900">How are you feeling right now?</h3>
+                            <p class="mt-3 text-sm leading-7 text-slate-600">Use this moment to notice your stress, energy, and mood before you choose your next step.</p>
                         </article>
                     </div>
 
@@ -585,6 +597,8 @@
                         <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-500 transition" data-index="0" aria-label="Go to slide 1"></button>
                         <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-200 transition" data-index="1" aria-label="Go to slide 2"></button>
                         <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-200 transition" data-index="2" aria-label="Go to slide 3"></button>
+                        <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-200 transition" data-index="3" aria-label="Go to slide 4"></button>
+                        <button type="button" class="js-wellness-dot h-2.5 w-2.5 rounded-full bg-fuchsia-200 transition" data-index="4" aria-label="Go to slide 5"></button>
                     </div>
                 </section>
                 <section class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
