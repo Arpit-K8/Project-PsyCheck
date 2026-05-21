@@ -105,6 +105,22 @@ class AssessmentController extends Controller
             'answers' => $answers,
         ]);
 
+        // Recalculate User Streaks and Consistency Metrics
+        $user = auth()->user();
+        if ($user) {
+            $user->updateWellnessStats();
+
+            // Send critical score alert email to trusted contact if health score is under 50%
+            if ($percentage < 50 && !empty($user->trusted_email) && $user->alert_on_critical) {
+                try {
+                    \Illuminate\Support\Facades\Mail::to($user->trusted_email)
+                        ->send(new \App\Mail\CriticalScoreAlertMail($user, $track, (int) $percentage));
+                } catch (\Exception $e) {
+                    \Illuminate\Support\Facades\Log::error('Failed to send critical score alert: ' . $e->getMessage());
+                }
+            }
+        }
+
         return redirect()->route('assessment.start', ['track' => $track])
             ->with('success', 'Assessment completed successfully.');
     }

@@ -29,7 +29,8 @@
             </div>
 
             <div class="flex flex-wrap items-center gap-3 text-sm font-semibold">
-                <a href="{{ route('dashboard') }}" class="rounded-full bg-fuchsia-50 px-4 py-2 text-fuchsia-700 ring-1 ring-fuchsia-100 transition hover:bg-fuchsia-100">
+                <a href="{{ route('dashboard') }}" class="inline-flex items-center gap-2 rounded-full bg-fuchsia-50 px-4 py-2 text-fuchsia-700 ring-1 ring-fuchsia-100 transition hover:bg-fuchsia-100">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                     Back to Dashboard
                 </a>
                 <div class="rounded-full bg-slate-50 px-4 py-2 text-slate-600 ring-1 ring-slate-200">{{ now()->format('M d, Y') }}</div>
@@ -56,6 +57,10 @@
             <aside class="space-y-6">
                 <article class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70 sm:p-8">
                     @include('profile.partials.delete-user-form')
+                </article>
+
+                <article class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70 sm:p-8">
+                    @include('profile.partials.update-goals-and-support-form')
                 </article>
             </aside>
         </main>

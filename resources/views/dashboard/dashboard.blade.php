@@ -8,6 +8,8 @@
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600,700,800" rel="stylesheet" />
+    <!-- Font Awesome for icon fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>
@@ -141,6 +143,35 @@
 
             // Notifications Logic
             $notifications = [];
+
+            // Critical Score Alert / Crisis Safeguard
+            $isMindCritical = $latestMindResult && $latestMindResult->score < 50;
+            $isBodyCritical = $latestBodyResult && $latestBodyResult->score < 50;
+            
+            if ($isMindCritical || $isBodyCritical) {
+                $criticalDetails = [];
+                if ($isMindCritical) {
+                    $criticalDetails[] = 'Mind (' . $latestMindResult->score . '%)';
+                }
+                if ($isBodyCritical) {
+                    $criticalDetails[] = 'Body (' . $latestBodyResult->score . '%)';
+                }
+                $detailsStr = implode(' & ', $criticalDetails);
+                
+                $emergencyPhone = auth()->user()->emergency_contact_phone;
+                $emergencyPhoneHtml = !empty($emergencyPhone) 
+                    ? ' or call your emergency contact at <a href="tel:' . e($emergencyPhone) . '" class="underline font-black text-rose-700 hover:text-rose-900">' . e($emergencyPhone) . '</a>'
+                    : '';
+                
+                $notifications[] = [
+                    'id' => 'critical_emergency_alert',
+                    'bgClass' => 'bg-rose-50 animate-pulse',
+                    'ringClass' => 'ring-rose-100',
+                    'textClass' => 'text-rose-600 font-extrabold',
+                    'title' => 'Safeguard: Stay Calm',
+                    'message' => 'Your recent ' . $detailsStr . ' check-in shows a low health score. Please <strong>stay calm, take a deep breath</strong>, and do not panic. If you are in immediate distress, please call emergency services (<strong>108 / 112</strong>)' . $emergencyPhoneHtml . ' immediately.'
+                ];
+            }
             
             if ($daysSince >= 2) {
                 $notifications[] = [
@@ -163,6 +194,19 @@
                     'message' => 'Your latest mind score is <span class="font-black text-fuchsia-700">' . $latestMindResult->score . '%</span>. Keep up the momentum!'
                 ];
             }
+
+            // Support Circle & Goals variables
+            $user = auth()->user();
+            $targetScore = $user->target_score ?? 75;
+            $streakDays = $user->streak_days ?? 0;
+            $consistencyRate = $user->consistency_rate ?? 0;
+            $emergencyName = $user->emergency_contact_name;
+            $emergencyPhone = $user->emergency_contact_phone;
+            $trustedEmail = $user->trusted_email;
+            $alertOnCritical = $user->alert_on_critical ?? true;
+
+            // Calculate progress to goal
+            $goalProgress = $targetScore > 0 ? min(100, round(($combinedScore / $targetScore) * 100)) : 0;
         @endphp
 
         @include('layouts.dashboard-navigation')
@@ -311,8 +355,77 @@
                             </div>
                             <div class="rounded-2xl bg-fuchsia-50 px-3 py-2 text-sm font-semibold text-fuchsia-700">reminder on</div>
                         </div>
+                </section>
+
+                <!-- Goals & Support Circle Grid Section -->
+                <section class="grid gap-6 md:grid-cols-2">
+                    <!-- Wellness Goals & Milestones Card -->
+                    <article class="rounded-[32px] md:col-span-2 bg-white p-8 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70 flex flex-col justify-between transition hover:shadow-lg">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-[0.24em] text-fuchsia-600">Wellness Goals</p>
+                                    <h3 class="mt-2 text-2xl font-extrabold text-slate-900">Goals & Activity</h3>
+                                </div>
+                                <div class="flex items-center gap-1.5 rounded-full bg-rose-50 px-3.5 py-1.5 text-xs font-bold text-rose-600 shadow-sm ring-1 ring-rose-100">
+                                    <span>{{ $streakDays }} Day Streak</span>
+                                </div>
+                            </div>
+
+                            <!-- Goal Progress bar -->
+                            <div class="mt-8 rounded-[24px] bg-fuchsia-50/40 p-5 ring-1 ring-fuchsia-100/60">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Baseline Target</p>
+                                        <p class="mt-1 text-base font-black text-slate-800">{{ $targetScore }}% <span class="text-[10px] font-medium text-slate-500">health</span></p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400">Goal Progress</p>
+                                        <p class="mt-1 text-base font-black text-fuchsia-700">{{ $goalProgress }}% <span class="text-[10px] font-medium text-fuchsia-500">reached</span></p>
+                                    </div>
+                                </div>
+
+                                <!-- Progress bar track -->
+                                <div class="mt-4 h-3.5 w-full rounded-full bg-fuchsia-100/70 overflow-hidden ring-1 ring-fuchsia-200/50">
+                                    <div class="h-full rounded-full bg-[linear-gradient(90deg,#be185d_0%,#c026d3_100%)] shadow-inner transition-all duration-1000 ease-out" style="width: {{ $goalProgress }}%"></div>
+                                </div>
+                                <p class="mt-4 text-xs leading-5 text-slate-500">
+                                    @if($combinedScore == 0)
+                                        Take assessments to calculate your current wellness balance and see progress to your target!
+                                    @elseif($combinedScore >= $targetScore)
+                                        🎉 <span class="font-bold text-fuchsia-700">Incredible!</span> You've met or exceeded your target score. Keep up the amazing momentum!
+                                    @else
+                                        You are currently at <strong class="font-extrabold text-slate-700">{{ $combinedScore }}%</strong>. Continue checking in regularly to raise your balance!
+                                    @endif
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Consistency details -->
+                        <div class="mt-6 grid grid-cols-2 gap-4">
+                            <div class="rounded-2xl bg-slate-50 p-4 border border-slate-100 flex items-center gap-3.5">
+                                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-fuchsia-600 font-extrabold text-sm shadow-sm ring-1 ring-fuchsia-100">
+                                    {{ $streakDays }}d
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 truncate">Check-in Streak</p>
+                                    <p class="text-xs font-black text-slate-800 truncate">{{ $streakDays > 0 ? $streakDays . ' Days Active' : 'No Active Streak' }}</p>
+                                </div>
+                            </div>
+
+                            <div class="rounded-2xl bg-slate-50 p-4 border border-slate-100 flex items-center gap-3.5">
+                                <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white text-fuchsia-700 font-extrabold text-sm shadow-sm ring-1 ring-fuchsia-100">
+                                    {{ $consistencyRate }}%
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400 truncate">Consistency (30d)</p>
+                                    <p class="text-xs font-black text-slate-800 truncate">{{ $consistencyRate }}% Check-in Rate</p>
+                                </div>
+                            </div>
+                        </div>
                     </article>
                 </section>
+
                 <section>
                     <article id="recommendation" class="rounded-[32px] bg-white p-7 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
                         <p class="text-2xl font-extrabold text-slate-900">Recommended next step</p>
@@ -533,6 +646,96 @@
                         </div>
                     </div>
                 </article>
+                
+                    <!-- Support Circle / Emergency Card -->
+                    <article class="rounded-[32px] bg-white p-8 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70 flex flex-col justify-between transition hover:shadow-lg">
+                        <div>
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-[0.24em] text-fuchsia-600">Support Circle</p>
+                                    <h3 class="mt-2 text-2xl font-extrabold text-slate-900">Safety & Safeguard</h3>
+                                </div>
+                                <div>
+                                    @if(!empty($trustedEmail) && $alertOnCritical)
+                                        <span class="rounded-full bg-fuchsia-50 px-3 py-1.5 text-[10px] font-bold text-fuchsia-600 ring-1 ring-fuchsia-100 flex items-center gap-1 shadow-sm">
+                                            Alerts Active
+                                        </span>
+                                    @else
+                                        <span class="rounded-full bg-slate-100 px-3 py-1.5 text-[10px] font-bold text-slate-500 ring-1 ring-slate-200">
+                                            Alerts Inactive
+                                        </span>
+                                    @endif
+                                </div>
+                            </div>
+
+                            @if(!empty($emergencyName) || !empty($emergencyPhone) || !empty($trustedEmail))
+                                <div class="mt-8 space-y-3">
+                                    <!-- Contact row -->
+                                    @if(!empty($emergencyName))
+                                        <div class="rounded-2xl bg-fuchsia-50/30 p-3.5 ring-1 ring-fuchsia-100/50 flex items-center justify-between gap-4">
+                                            <div class="flex items-center gap-3">
+                                                <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-fuchsia-600 shadow-sm ring-1 ring-fuchsia-100">
+                                                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                                </div>
+                                                <div>
+                                                    <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Emergency Contact</p>
+                                                    <p class="text-sm font-extrabold text-slate-800">{{ $emergencyName }}</p>
+                                                </div>
+                                            </div>
+                                            @if(!empty($emergencyPhone))
+                                                <a href="tel:{{ $emergencyPhone }}" class="flex h-10 w-10 items-center justify-center rounded-xl bg-fuchsia-700 text-white shadow-md hover:bg-fuchsia-800 transition" title="Call Emergency Contact">
+                                                    <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                                                </a>
+                                            @endif
+                                        </div>
+                                    @endif
+
+                                    <!-- Phone row if emergencyName empty but phone present -->
+                                    @if(empty($emergencyName) && !empty($emergencyPhone))
+                                        <div class="rounded-2xl bg-fuchsia-50/30 p-3.5 ring-1 ring-fuchsia-100/50 flex items-center justify-between gap-4">
+                                            <div>
+                                                <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Emergency Phone</p>
+                                                <p class="text-sm font-extrabold text-slate-800">{{ $emergencyPhone }}</p>
+                                            </div>
+                                            <a href="tel:{{ $emergencyPhone }}" class="flex h-10 w-10 items-center justify-center rounded-xl bg-fuchsia-700 text-white shadow-md hover:bg-fuchsia-800 transition">
+                                                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    @endif
+
+                                    <!-- Trusted Email row -->
+                                    @if(!empty($trustedEmail))
+                                        <div class="rounded-2xl bg-fuchsia-50/30 p-3.5 ring-1 ring-fuchsia-100/50 flex items-center gap-3">
+                                            <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-white text-fuchsia-600 shadow-sm ring-1 ring-fuchsia-100">
+                                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <p class="text-[9px] font-bold uppercase tracking-wider text-slate-400">Trusted Alert Email</p>
+                                                <p class="text-sm font-extrabold text-slate-800 truncate" title="{{ $trustedEmail }}">{{ $trustedEmail }}</p>
+                                            </div>
+                                        </div>
+                                    @endif
+                                </div>
+                            @else
+                                <!-- Empty state for support contacts -->
+                                <div class="mt-8 flex flex-col items-center justify-center rounded-[24px] bg-slate-50 p-6 text-center border border-dashed border-fuchsia-200">
+                                    <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-fuchsia-50 text-fuchsia-500 shadow-sm">
+                                        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                                    </div>
+                                    <p class="mt-4 text-sm font-extrabold text-slate-800">Support Circle Pending</p>
+                                    <p class="mt-1 max-w-[220px] text-xs text-slate-400">Add an emergency contact and trusted email to activate your Support Circle safeguard.</p>
+                                </div>
+                            @endif
+                        </div>
+
+                        <!-- Edit link shortcut -->
+                        <div class="mt-6">
+                            <a href="{{ route('profile.edit') }}" class="flex w-full items-center justify-center gap-2 rounded-[18px] bg-fuchsia-50 py-3.5 text-sm font-bold text-fuchsia-700 transition hover:bg-fuchsia-100 ring-1 ring-fuchsia-200/50">
+                                <span>Configure Goals & Contacts</span>
+                                <span>›</span>
+                            </a>
+                        </div>
+                    </article>
                 <article class="rounded-[32px] bg-white p-6 shadow-[0_20px_55px_rgba(89,29,63,.1)] ring-1 ring-fuchsia-100/70">
                     <p class="text-sm font-bold uppercase tracking-[0.24em] text-fuchsia-600">Profile note</p>
                     <h3 class="mt-2 text-2xl font-extrabold text-slate-900">Keep your profile ready for better tracking</h3>
@@ -637,7 +840,7 @@
             const notificationBadge = document.querySelector('.js-notification-badge');
             const navBellBadge = document.querySelector('.js-nav-notification-badge');
             const emptyState = document.querySelector('.js-empty-state');
-            let unreadCount = 2;
+            let unreadCount = {{ count($notifications) }};
 
             if (!notificationsContainer) return;
 

@@ -26,7 +26,20 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $data = $request->validated();
+        
+        // Only modify or fill alert_on_critical if we are updating the support circle
+        if ($request->input('form_type') === 'support_circle') {
+            $data['alert_on_critical'] = $request->boolean('alert_on_critical');
+        } elseif (!$request->has('form_type')) {
+            // For tests or backwards compatibility where form_type is not provided,
+            // check if support settings are included in the request
+            if ($request->has('target_score') || $request->has('alert_on_critical') || $request->has('trusted_email')) {
+                $data['alert_on_critical'] = $request->boolean('alert_on_critical');
+            }
+        }
+        
+        $request->user()->fill($data);
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
